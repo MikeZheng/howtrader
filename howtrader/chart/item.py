@@ -37,7 +37,7 @@ class ChartItem(pg.GraphicsObject):
         self._rect_area: Tuple[float, float] = None
 
         # Very important! Only redraw the visible part and improve speed a lot.
-        self.setFlag(self.ItemUsesExtendedStyleOption)
+        self.setFlag(QtWidgets.QGraphicsObject.GraphicsItemFlag.ItemUsesExtendedStyleOption)
 
     @abstractmethod
     def _draw_bar_picture(self, ix: int, bar: BarData) -> QtGui.QPicture:
