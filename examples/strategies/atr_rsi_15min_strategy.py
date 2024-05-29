@@ -50,7 +50,7 @@ class AtrRsi15MinStrategy(CtaTemplate):
         """"""
         super().__init__(cta_engine, strategy_name, vt_symbol, setting)
         self.bg = BarGenerator(self.on_bar, 15, self.on_15min_bar)
-        self.am = ArrayManager()
+        self.am = ArrayManager(size=max(self.rsi_length, self.atr_length+self.atr_ma_length)+1)
 
     def on_init(self):
         """
