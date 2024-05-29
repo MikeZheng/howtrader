@@ -110,10 +110,10 @@ class TurtleSignalStrategy(CtaTemplate):
         """
         if trade.direction == Direction.LONG:
             self.long_entry = trade.price
-            self.long_stop = self.long_entry - 2 * self.atr_value
+            self.long_stop = self.long_entry - Decimal(str(2 * self.atr_value))
         else:
             self.short_entry = trade.price
-            self.short_stop = self.short_entry + 2 * self.atr_value
+            self.short_stop = self.short_entry + Decimal(str(2 * self.atr_value))
 
     def on_order(self, order: OrderData):
         """
