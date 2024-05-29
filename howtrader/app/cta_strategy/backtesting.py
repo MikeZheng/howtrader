@@ -281,10 +281,12 @@ class BacktestingEngine:
         ix: int = 0
 
         for ix, data in enumerate(self.history_data):
-            if self.datetime and data.datetime.day != self.datetime.day:
-                day_count += 1
-                if day_count >= self.days:
-                    break
+            # if self.datetime and data.datetime.day != self.datetime.day:
+            # 注释上面这行是因为历史数据的间隔时间和策略是相同的
+            # 策略在初始化init的时候，load_data的数字也是同一个间隔，而不是固定日期
+            day_count += 1
+            if day_count > self.days:
+                break
 
             self.datetime = data.datetime
 
