@@ -297,6 +297,9 @@ class BaseMonitor(QtWidgets.QTableWidget):
             setting: dict = self.headers[header]
 
             content = data.__getattribute__(header)
+            if isinstance(content, datetime):
+                content = content.strftime("%Y-%m-%d %H:%M:%S")
+
             cell: QtWidgets.QTableWidgetItem = setting["cell"](content, data)
             self.setItem(0, column, cell)
 
