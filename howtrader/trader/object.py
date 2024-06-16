@@ -4,9 +4,11 @@ Basic data structure used for general trading function in the trading platform.
 
 from dataclasses import dataclass
 from datetime import datetime
-from logging import INFO
 from decimal import Decimal
+from logging import INFO
+
 import pandas as pd
+
 from .constant import Direction, Exchange, Interval, Offset, Status, Product, OptionType, OrderType
 
 ACTIVE_STATUSES = {Status.SUBMITTING, Status.NOTTRADED, Status.PARTTRADED}  # define the active status set.
@@ -172,6 +174,7 @@ class TradeData(BaseData):
     price: Decimal = Decimal("0")
     volume: Decimal = Decimal("0")
     datetime: datetime = None
+    commission: Decimal = Decimal("0")
 
     def __post_init__(self) -> None:
         """"""
