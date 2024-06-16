@@ -1,24 +1,23 @@
 import csv
 import subprocess
-from datetime import datetime, timedelta
 from copy import copy
+from datetime import datetime, timedelta
 from typing import List, Tuple
 
 import numpy as np
 import pyqtgraph as pg
 from pandas import DataFrame
 
-from howtrader.trader.constant import Interval, Direction, Exchange
-from howtrader.trader.engine import MainEngine, BaseEngine
-from howtrader.trader.ui import QtCore, QtWidgets, QtGui
-from howtrader.trader.ui.widget import BaseMonitor, BaseCell, DirectionCell, EnumCell
-from howtrader.event import Event, EventEngine
-from howtrader.chart import ChartWidget, CandleItem, VolumeItem
-from howtrader.trader.utility import load_json, save_json
-from howtrader.trader.object import BarData, TradeData, OrderData
-from howtrader.trader.database import DB_TZ
 from howtrader.app.cta_strategy.backtesting import DailyResult
-
+from howtrader.chart import ChartWidget, CandleItem, VolumeItem
+from howtrader.event import Event, EventEngine
+from howtrader.trader.constant import Interval, Direction, Exchange
+from howtrader.trader.database import DB_TZ
+from howtrader.trader.engine import MainEngine, BaseEngine
+from howtrader.trader.object import BarData, TradeData, OrderData
+from howtrader.trader.ui import QtCore, QtWidgets, QtGui
+from howtrader.trader.ui.widget import BaseMonitor, BaseCell, DirectionCell, EnumCell, DateTimeCell
+from howtrader.trader.utility import load_json, save_json
 from ..engine import (
     APP_NAME,
     EVENT_BACKTESTER_LOG,
@@ -432,7 +431,6 @@ class BacktesterManager(QtWidgets.QWidget):
         start_date: QtCore.QDate = self.start_date_edit.date()
         end_date: QtCore.QDate = self.end_date_edit.date()
 
-
         start: datetime = datetime(
             start_date.year(),
             start_date.month(),
@@ -635,7 +633,7 @@ class BacktestingSettingEditor(QtWidgets.QDialog):
     """
 
     def __init__(
-        self, class_name: str, parameters: dict
+            self, class_name: str, parameters: dict
     ) -> None:
         """"""
         super(BacktestingSettingEditor, self).__init__()
@@ -843,7 +841,7 @@ class OptimizationSettingEditor(QtWidgets.QDialog):
     }
 
     def __init__(
-        self, class_name: str, parameters: dict
+            self, class_name: str, parameters: dict
     ) -> None:
         """"""
         super().__init__()
@@ -978,7 +976,7 @@ class OptimizationResultMonitor(QtWidgets.QDialog):
     """
 
     def __init__(
-        self, result_values: list, target_display: str
+            self, result_values: list, target_display: str
     ) -> None:
         """"""
         super().__init__()
@@ -1054,6 +1052,7 @@ class OptimizationResultMonitor(QtWidgets.QDialog):
                 row_data: list = [str(setting), str(target_value)]
                 writer.writerow(row_data)
 
+
 class FloatCell(BaseCell):
     """
     Cell used for showing pnl data.
@@ -1063,6 +1062,7 @@ class FloatCell(BaseCell):
         """"""
         content: str = f"{content:.2f}"
         super().__init__(content, data)
+
 
 class BacktestingTradeMonitor(BaseMonitor):
     """
@@ -1105,9 +1105,6 @@ class BacktestingOrderMonitor(BaseMonitor):
     }
 
 
-
-
-
 class DailyResultMonitor(BaseMonitor):
     """
     Monitor for backtesting daily result.
@@ -1132,11 +1129,11 @@ class BacktestingResultDialog(QtWidgets.QDialog):
     """"""
 
     def __init__(
-        self,
-        main_engine: MainEngine,
-        event_engine: EventEngine,
-        title: str,
-        table_class: QtWidgets.QTableWidget
+            self,
+            main_engine: MainEngine,
+            event_engine: EventEngine,
+            title: str,
+            table_class: QtWidgets.QTableWidget
     ) -> None:
         """"""
         super().__init__()

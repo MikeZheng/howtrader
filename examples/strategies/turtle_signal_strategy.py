@@ -1,11 +1,12 @@
+from decimal import Decimal
+
 from howtrader.app.cta_strategy import (
     CtaTemplate,
     StopOrder
 )
-
 from howtrader.trader.object import TickData, BarData, TradeData, OrderData, Direction
 from howtrader.trader.utility import BarGenerator, ArrayManager
-from decimal import Decimal
+
 
 class TurtleSignalStrategy(CtaTemplate):
     """"""

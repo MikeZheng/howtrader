@@ -1,25 +1,26 @@
-from collections import defaultdict
-from datetime import date, datetime, timedelta
-from typing import Callable
-from itertools import product
-from functools import lru_cache
-from time import time
 import multiprocessing
 import random
 import traceback
+from collections import defaultdict
+from datetime import date, datetime, timedelta
+from decimal import Decimal
+from functools import lru_cache
+from itertools import product
+from time import time
+from typing import Callable
 from typing import Type, Dict, List
+
 import numpy as np
-from pandas import DataFrame
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from deap import creator, base, tools, algorithms
+from pandas import DataFrame
+from plotly.subplots import make_subplots
 
 from howtrader.trader.constant import (Direction, Offset, Exchange,
-                                  Interval, Status)
+                                       Interval, Status)
 from howtrader.trader.database import get_database, BaseDatabase
 from howtrader.trader.object import OrderData, TradeData, BarData, TickData
 from howtrader.trader.utility import round_to
-from decimal import Decimal
 
 database: BaseDatabase = get_database()
 
@@ -32,7 +33,6 @@ from .base import (
     INTERVAL_DELTA_MAP
 )
 from .template import CtaTemplate
-
 
 # Set deap algo
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -50,7 +50,7 @@ class OptimizationSetting:
         self.target_name = ""
 
     def add_parameter(
-        self, name: str, start: float, end: float = None, step: float = None
+            self, name: str, start: float, end: float = None, step: float = None
     ):
         """"""
         if not end and not step:
@@ -174,19 +174,19 @@ class BacktestingEngine:
         self.daily_results.clear()
 
     def set_parameters(
-        self,
-        vt_symbol: str,
-        interval: Interval,
-        start: datetime,
-        rate: float,
-        slippage: float,
-        size: float,
-        pricetick: float,
-        capital: int = 0,
-        end: datetime = None,
-        mode: BacktestingMode = BacktestingMode.BAR,
-        inverse: bool = False,
-        annual_days: int = 365
+            self,
+            vt_symbol: str,
+            interval: Interval,
+            start: datetime,
+            rate: float,
+            slippage: float,
+            size: float,
+            pricetick: float,
+            capital: int = 0,
+            end: datetime = None,
+            mode: BacktestingMode = BacktestingMode.BAR,
+            inverse: bool = False,
+            annual_days: int = 365
     ):
         """"""
         self.mode = mode
@@ -225,7 +225,7 @@ class BacktestingEngine:
             self.output("start date should be less than end date")
             return
 
-        self.history_data.clear()       # Clear previously loaded history data
+        self.history_data.clear()  # Clear previously loaded history data
 
         # Load 30 days of data each time and allow for progress update
         progress_delta = timedelta(days=30)
@@ -625,7 +625,8 @@ class BacktestingEngine:
 
         return result_values
 
-    def run_ga_optimization(self, optimization_setting: OptimizationSetting, population_size=100, ngen_size=30, output=True) -> list:
+    def run_ga_optimization(self, optimization_setting: OptimizationSetting, population_size=100, ngen_size=30,
+                            output=True) -> list:
         """
         target name: end_balance, max_drawdown, max_ddpercent, max_drawdown_duration, total_net_pnl
         daily_net_pnl, total_commission, daily_commission, total_slippage, daily_slippage, total_turnover, daily_turnover
@@ -698,16 +699,16 @@ class BacktestingEngine:
         toolbox.register("select", tools.selNSGA2)
 
         total_size = len(settings)
-        pop_size = population_size                      # number of individuals in each generation
-        lambda_ = pop_size                              # number of children to produce at each generation
-        mu = int(pop_size * 0.8)                        # number of individuals to select for the next generation
+        pop_size = population_size  # number of individuals in each generation
+        lambda_ = pop_size  # number of children to produce at each generation
+        mu = int(pop_size * 0.8)  # number of individuals to select for the next generation
 
-        cxpb = 0.95         # probability that an offspring is produced by crossover
-        mutpb = 1 - cxpb    # probability that an offspring is produced by mutation
-        ngen = ngen_size    # number of generation
+        cxpb = 0.95  # probability that an offspring is produced by crossover
+        mutpb = 1 - cxpb  # probability that an offspring is produced by mutation
+        ngen = ngen_size  # number of generation
 
         pop = toolbox.population(pop_size)
-        hof = tools.ParetoFront()               # end result of pareto front
+        hof = tools.ParetoFront()  # end result of pareto front
 
         stats = tools.Statistics(lambda ind: ind.fitness.values)
         np.set_printoptions(suppress=True)
@@ -812,7 +813,8 @@ class BacktestingEngine:
 
             # Check whether limit orders can be filled.
             long_cross = (Direction.LONG == order.direction and order.price >= long_cross_price > 0)
-            short_cross = (Direction.SHORT == order.direction and order.price <= short_cross_price and short_cross_price > 0)
+            short_cross = (
+                    Direction.SHORT == order.direction and order.price <= short_cross_price and short_cross_price > 0)
 
             if not long_cross and not short_cross:
                 continue
@@ -870,13 +872,13 @@ class BacktestingEngine:
         for stop_order in list(self.active_stop_orders.values()):
             # Check whether stop order can be triggered.
             long_cross = (
-                stop_order.direction == Direction.LONG
-                and stop_order.price <= long_cross_price
+                    stop_order.direction == Direction.LONG
+                    and stop_order.price <= long_cross_price
             )
 
             short_cross = (
-                stop_order.direction == Direction.SHORT
-                and stop_order.price >= short_cross_price
+                    stop_order.direction == Direction.SHORT
+                    and stop_order.price >= short_cross_price
             )
 
             if not long_cross and not short_cross:
@@ -941,12 +943,12 @@ class BacktestingEngine:
             self.strategy.on_trade(trade)
 
     def load_bar(
-        self,
-        vt_symbol: str,
-        days: int,
-        interval: Interval,
-        callback: Callable,
-        use_database: bool
+            self,
+            vt_symbol: str,
+            days: int,
+            interval: Interval,
+            callback: Callable,
+            use_database: bool
     ) -> List[BarData]:
         """"""
         self.days = days
@@ -960,16 +962,16 @@ class BacktestingEngine:
         return []
 
     def send_order(
-        self,
-        strategy: CtaTemplate,
-        direction: Direction,
-        offset: Offset,
-        price: Decimal,
-        volume: Decimal,
-        stop: bool,
-        lock: bool,
-        net: bool,
-        maker: bool = False
+            self,
+            strategy: CtaTemplate,
+            direction: Direction,
+            offset: Offset,
+            price: Decimal,
+            volume: Decimal,
+            stop: bool,
+            lock: bool,
+            net: bool,
+            maker: bool = False
     ) -> List[str]:
         """"""
         price = round_to(price, Decimal(str(self.pricetick)))
@@ -980,11 +982,11 @@ class BacktestingEngine:
         return [vt_orderid]
 
     def send_stop_order(
-        self,
-        direction: Direction,
-        offset: Offset,
-        price: Decimal,
-        volume: Decimal
+            self,
+            direction: Direction,
+            offset: Offset,
+            price: Decimal,
+            volume: Decimal
     ) -> str:
         """"""
         self.stop_order_count += 1
@@ -1006,12 +1008,12 @@ class BacktestingEngine:
         return stop_order.stop_orderid
 
     def send_limit_order(
-        self,
-        direction: Direction,
-        offset: Offset,
-        price: Decimal,
-        volume: Decimal
-    ) ->str:
+            self,
+            direction: Direction,
+            offset: Offset,
+            price: Decimal,
+            volume: Decimal
+    ) -> str:
         """"""
         self.limit_order_count += 1
 
@@ -1143,7 +1145,7 @@ class DailyResult:
         self.close_price = close_price
         self.pre_close = 0
 
-        self.trades = []
+        self.trades: List[TradeData] = []
         self.trade_count = 0
 
         self.start_pos = 0
@@ -1163,13 +1165,13 @@ class DailyResult:
         self.trades.append(trade)
 
     def calculate_pnl(
-        self,
-        pre_close: float,
-        start_pos: float,
-        size: float,
-        rate: float,
-        slippage: float,
-        inverse: bool
+            self,
+            pre_close: float,
+            start_pos: float,
+            size: float,
+            rate: float,
+            slippage: float,
+            inverse: bool
     ):
         """"""
         # If no pre_close provided on the first day,
@@ -1183,9 +1185,9 @@ class DailyResult:
         self.start_pos = start_pos
         self.end_pos = start_pos
 
-        if not inverse:     # For normal contract
+        if not inverse:  # For normal contract
             self.holding_pnl = self.start_pos * (self.close_price - self.pre_close) * size
-        else:               # For crypto currency inverse contract
+        else:  # For crypto currency inverse contract
             self.holding_pnl = self.start_pos * (1 / self.pre_close - 1 / self.close_price) * size
 
         # Trading pnl is the pnl from new trade during the day
@@ -1219,20 +1221,20 @@ class DailyResult:
 
 
 def optimize(
-    target_name: str,
-    strategy_class: CtaTemplate,
-    setting: dict,
-    vt_symbol: str,
-    interval: Interval,
-    start: datetime,
-    rate: float,
-    slippage: float,
-    size: float,
-    pricetick: float,
-    capital: int,
-    end: datetime,
-    mode: BacktestingMode,
-    inverse: bool
+        target_name: str,
+        strategy_class: CtaTemplate,
+        setting: dict,
+        vt_symbol: str,
+        interval: Interval,
+        start: datetime,
+        rate: float,
+        slippage: float,
+        size: float,
+        pricetick: float,
+        capital: int,
+        end: datetime,
+        mode: BacktestingMode,
+        inverse: bool
 ):
     """
     Function for running in multiprocessing.pool
@@ -1294,11 +1296,11 @@ def ga_optimize(parameter_values: list):
 
 @lru_cache(maxsize=999)
 def load_bar_data(
-    symbol: str,
-    exchange: Exchange,
-    interval: Interval,
-    start: datetime,
-    end: datetime
+        symbol: str,
+        exchange: Exchange,
+        interval: Interval,
+        start: datetime,
+        end: datetime
 ):
     """"""
     return database.load_bar_data(
@@ -1308,10 +1310,10 @@ def load_bar_data(
 
 @lru_cache(maxsize=999)
 def load_tick_data(
-    symbol: str,
-    exchange: Exchange,
-    start: datetime,
-    end: datetime
+        symbol: str,
+        exchange: Exchange,
+        start: datetime,
+        end: datetime
 ):
     """"""
     return database.load_tick_data(
