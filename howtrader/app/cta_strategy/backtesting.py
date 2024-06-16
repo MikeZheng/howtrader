@@ -1212,6 +1212,7 @@ class DailyResult:
                 self.trading_pnl += pos_change * (1 / float(trade.price) - 1 / self.close_price) * size
                 self.slippage += float(trade.volume) * size * slippage / (float(trade.price) ** 2)
 
+            trade.commission = turnover * rate
             self.turnover += turnover
             self.commission += turnover * rate
 
