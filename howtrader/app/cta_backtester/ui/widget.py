@@ -1078,7 +1078,7 @@ class BacktestingTradeMonitor(BaseMonitor):
         "offset": {"display": "开平", "cell": EnumCell, "update": False},
         "price": {"display": "价格", "cell": FloatCell, "update": False},
         "volume": {"display": "数量", "cell": FloatCell, "update": False},
-        "datetime": {"display": "时间", "cell": BaseCell, "update": False},
+        "datetime": {"display": "时间", "cell": DateTimeCell, "update": False},
         "commission": {"display": "手续费", "cell": FloatCell, "update": False},
         "gateway_name": {"display": "接口", "cell": BaseCell, "update": False},
     }
