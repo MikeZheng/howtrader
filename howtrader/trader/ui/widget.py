@@ -3,15 +3,16 @@ Basic widgets for UI.
 """
 
 import csv
-from datetime import datetime
 import platform
+from copy import copy
+from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 from typing import Any, Dict, List, Optional
-from copy import copy
-from tzlocal import get_localzone
 
 import importlib_metadata
-from decimal import Decimal
+from tzlocal import get_localzone
+
 from .qt import Qt, QtCore, QtGui, QtWidgets
 from ..constant import Direction, Exchange, Offset, OrderType, Product
 from ..engine import MainEngine, Event, EventEngine
@@ -34,8 +35,8 @@ from ..object import (
     QuoteData,
     TickData
 )
-from ..utility import load_json, save_json, extract_vt_symbol, round_to
 from ..setting import SETTING_FILENAME, SETTINGS, QUICK_TRADER_SETTINGS
+from ..utility import load_json, save_json, extract_vt_symbol, round_to
 
 COLOR_LONG = QtGui.QColor("red")
 COLOR_SHORT = QtGui.QColor("green")
@@ -182,6 +183,35 @@ class TimeCell(BaseCell):
         self._data = data
 
 
+class DateTimeCell(BaseCell):
+    """
+    Cell used for showing time string from datetime object.
+    """
+
+    local_tz = get_localzone()
+
+    def __init__(self, content: Any, data: Any) -> None:
+        """"""
+        super(DateTimeCell, self).__init__(content, data)
+
+    def set_content(self, content: Any, data: Any) -> None:
+        """"""
+        if content is None:
+            return
+
+        content: datetime = content.astimezone(self.local_tz)
+        timestamp: str = content.strftime("%Y-%m-%d %H:%M:%S")
+
+        millisecond: int = int(content.microsecond / 1000)
+        if millisecond:
+            timestamp = f"{timestamp}.{millisecond}"
+        else:
+            timestamp = f"{timestamp}.000"
+
+        self.setText(timestamp)
+        self._data = data
+
+
 class MsgCell(BaseCell):
     """
     Cell used for showing msg data.
@@ -297,8 +327,6 @@ class BaseMonitor(QtWidgets.QTableWidget):
             setting: dict = self.headers[header]
 
             content = data.__getattribute__(header)
-            if isinstance(content, datetime):
-                content = content.strftime("%Y-%m-%d %H:%M:%S")
 
             cell: QtWidgets.QTableWidgetItem = setting["cell"](content, data)
             self.setItem(0, column, cell)
