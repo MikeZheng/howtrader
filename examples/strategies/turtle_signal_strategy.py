@@ -4,6 +4,7 @@ from howtrader.app.cta_strategy import (
     CtaTemplate,
     StopOrder
 )
+from howtrader.trader.constant import Interval
 from howtrader.trader.object import TickData, BarData, TradeData, OrderData, Direction
 from howtrader.trader.utility import BarGenerator, ArrayManager
 
@@ -35,7 +36,8 @@ class TurtleSignalStrategy(CtaTemplate):
         """"""
         super().__init__(cta_engine, strategy_name, vt_symbol, setting)
 
-        self.bg = BarGenerator(self.on_bar)
+        # self.bg = BarGenerator(self.on_bar)
+        self.bg = BarGenerator(self.on_bar, 1, on_window_bar=self.on_1h_bar, interval=Interval.HOUR)
         self.am = ArrayManager()
 
     def on_init(self):
@@ -64,6 +66,12 @@ class TurtleSignalStrategy(CtaTemplate):
         self.bg.update_tick(tick)
 
     def on_bar(self, bar: BarData):
+        """
+        Callback of new bar data update.
+        """
+        self.bg.update_bar(bar)
+
+    def on_1h_bar(self, bar: BarData):
         """
         Callback of new bar data update.
         """
